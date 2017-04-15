@@ -1,0 +1,121 @@
+{
+  "project_info": {
+    "project_number": "760070901710",
+    "firebase_url": "https://beachsidebuggies-140611.firebaseio.com",
+    "project_id": "beachsidebuggies-140611",
+    "storage_bucket": "beachsidebuggies-140611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760070901710:android:05dc16ed9ef7334b",
+        "android_client_info": {
+          "package_name": "com.eryushion.beachsidebuggies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760070901710-fhce4grf361i8k7lli24uqmd681ijplo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eryushion.beachsidebuggies",
+            "certificate_hash": "e3adb5a18ba599caf3f47a3182c2f7884cc3a474"
+          }
+        },
+        {
+          "client_id": "760070901710-o79jq8eug818ngr2vaiqd1pdbbj46838.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eryushion.beachsidebuggies",
+            "certificate_hash": "0d5560fdbd7fca75186bbc42d7dac69a3622170e"
+          }
+        },
+        {
+          "client_id": "760070901710-0stdnashpv04v734uddt315c6jtd9unb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0Sj3uTrqbXmrLVCK2aXotg8hQXmjRG6c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760070901710-0stdnashpv04v734uddt315c6jtd9unb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760070901710-2k3f1ljenqraq6fuukrdrt028uc7i2ic.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "adamdostalik.BeachSideBuggiesDriver"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760070901710:android:06b102834a6c5d46",
+        "android_client_info": {
+          "package_name": "com.eryushion.beachsidebuggiesdriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760070901710-59tl68sjc2el1r4erhtonnugsqg5qoto.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eryushion.beachsidebuggiesdriver",
+            "certificate_hash": "0d5560fdbd7fca75186bbc42d7dac69a3622170e"
+          }
+        },
+        {
+          "client_id": "760070901710-0stdnashpv04v734uddt315c6jtd9unb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0Sj3uTrqbXmrLVCK2aXotg8hQXmjRG6c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760070901710-0stdnashpv04v734uddt315c6jtd9unb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760070901710-2k3f1ljenqraq6fuukrdrt028uc7i2ic.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "adamdostalik.BeachSideBuggiesDriver"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

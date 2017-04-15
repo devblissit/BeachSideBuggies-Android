@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BeachSideBuggies</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="facebook_app_id">169949080104104</string>
+    <string name="hours_alert_msg">It is currently not within our operating hours, sorry for the inconvenience!</string>
+    <string name="hours_alert_title">Error</string>
+    <string name="area_alert_msg">You must be in the service area to request a ride!</string>
+    <string name="drop_alert_msg">Your drop off location must be in our service area!</string>
+    <string name="pickup_alert_msg">Your pickup location must be in our service area!</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00B8F5</color>
+    <color name="colorPrimaryDark">#018ebc</color>
+    <color name="colorAccent">#026889</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorRed">#c71c19</color>
+    <color name="colorBlack">#f02d2c2c</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="colorTrans">#00000000</color>
+    <color name="colorOrange">#f67138</color>
+    <color name="colorGreen">#21ad4d</color>
+    <color name="polygon_stroke_color">#8021AD4B</color>
+    <color name="polygon_fill_color">#1A21AD4B</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+
+</resources>

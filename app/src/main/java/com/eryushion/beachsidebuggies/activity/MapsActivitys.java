@@ -278,42 +278,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
     private Calendar toTime;
     private Calendar currentTime;
 
-    public boolean checkTime(String time) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm",Locale.getDefault());
-            String[] times = time.split("-");
-            String[] from = times[0].split(":");
-            String[] until = times[1].split(":");
 
-            int hourFrom =Integer.valueOf(from[0]);
-            int minuteFrom =Integer.valueOf(from[1]);
-            int hourTo =Integer.valueOf(until[0]);
-            int minuteTo =Integer.valueOf(until[1]);
-
-
-            fromTime = Calendar.getInstance();
-            fromTime.set(Calendar.HOUR_OF_DAY, hourFrom);
-            fromTime.set(Calendar.MINUTE,minuteFrom);
-
-            toTime = Calendar.getInstance();
-            toTime.set(Calendar.HOUR_OF_DAY, hourTo);
-            toTime.set(Calendar.MINUTE,minuteTo);
-            if (hourFrom>hourTo){
-                toTime.add(Calendar.DATE, 01);
-            }
-
-            currentTime = Calendar.getInstance();
-
-            Log.e("dates",df.format(currentTime.getTime())+" "+df.format(fromTime.getTime())+" to time "+df.format(toTime.getTime()));
-            if(currentTime.after(fromTime) && currentTime.before(toTime)){
-                return true;
-            }
-        } catch (Exception e) {
-            Log.e("error",e+"");
-            return false;
-        }
-        return false;
-    }
     @Override
     public void onClick(View view) {
 
@@ -368,6 +333,12 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                 break;
 
             case R.id.imgBack:
+
+                Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_WEEK);
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+                Log.d("LOG", String.valueOf(day));
 
                 llDropOff.setVisibility(View.GONE);
                 tvPickup.setClickable(true);
@@ -448,59 +419,68 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private boolean checkDay() {
-        boolean validTime = true;
+        boolean validTime;
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        Log.d("LOG", String.valueOf(day));
 /**------------------------------------------------------------24 HOURS FORMAT--*/
         switch (day) {
             case Calendar.SUNDAY:
-                Log.e("SUNDAY",checkTime("11:00-00:00")+"");
-                if (!checkTime("11:00-00:00")){
-                    validTime=false;
+                if ((hour >= 11 && hour < 24) || hour == 0 || (hour == 1 && minute < 30)) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             case Calendar.MONDAY:
-                Log.e("MONDAY",checkTime("15:00-00:00")+"");
-                if (!checkTime("15:00-00:00")){
-                    validTime=false;
+                if (hour >= 15 && hour < 24) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             case Calendar.TUESDAY:
-                Log.e("TUESDAY",checkTime("15:00-00:00")+"");
-                if (!checkTime("15:00-00:00")){
-                    validTime=false;
+                if (hour >= 15 && hour < 24) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             case Calendar.WEDNESDAY:
-                Log.e("WEDNESDAY",checkTime("15:00-00:00")+"");
-                if (!checkTime("15:00-00:00")){
-                    validTime=false;
+                if (hour >= 15 && hour < 24) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
-
                 break;
             case Calendar.THURSDAY:
-                Log.e("THURSDAY",checkTime("15:00-02:00")+"");
-                if (!checkTime("15:00-02:00")){
-                    validTime=false;
+                if (hour >= 15 && hour < 24) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             case Calendar.FRIDAY:
-                Log.e("FRIDAY",checkTime("15:00-02:00")+"");
-                if (!checkTime("15:00-02:00")){
-                    validTime=false;
+                if ((hour >= 15 && hour < 24) || hour == 0 || (hour == 1 && minute < 30))  {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             case Calendar.SATURDAY:
-                Log.e("SATURDAY",checkTime("11:00-02:00")+"");
-                if (!checkTime("11:00-02:00")){
-                    validTime=false;
+                if ((hour >= 11 && hour < 24) || hour == 0 || (hour == 1 && minute < 30)) {
+                    validTime = true;
+                }else{
+                    validTime = false;
                 }
                 break;
             default:
-                Log.e("unknown",checkTime("15:00-02:00")+"");
-                validTime=false;
+                validTime = false;
                 break;
         }
+
         return validTime;
     }
 

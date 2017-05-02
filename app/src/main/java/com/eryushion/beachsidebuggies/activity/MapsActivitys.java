@@ -109,12 +109,19 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
     double pickupLatitude, pickupLongitude, dropoffLatitude, dropoffLongitude;
     int numberOfRiders = 1;
     int status = 0;
+    int requestLimit = 0;
+    long PickUpCount = 0;
     String rideId = "", driverName = "", driverFcmToken = "";
     boolean requestingRide = false, logout = false, setPickup = false;
     SharedPreferences sharedPreferences;
     ImageView imageMarker;
     ArrayList<LatLng> poly=new ArrayList<>();
     LatLng current_LatLng;
+    private int zero;
+    private int one;
+    private int two;
+    private int statusCount;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,6 +165,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
         mDatabase = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = getSharedPreferences(Constans.SHARDPREF_FILENAME, MODE_PRIVATE);
         user = mfirebaseAuth.getCurrentUser();
+        System.out.println("USERRRR"+user.toString());
         if (user != null) {
             firebaseUserId = user.getUid();
             mDatabase.child("users")
@@ -198,6 +206,82 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
 
                         }
                     });
+            mDatabase.child("pickupPoints").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.getValue() != null)
+                    {
+//                        long count = dataSnapshot.child("status").getChildrenCount();
+//                        System.out.println("nooo"+count);
+                        PickUpCount = dataSnapshot.getChildrenCount();
+                        System.out.println("PickUpCount"+PickUpCount);
+
+                        for(DataSnapshot snapShot:dataSnapshot.getChildren())
+                        {
+                            switch(snapShot.child("status").getValue(Integer.class)){ //This statement is seeing what "category" is.
+                                case 0:
+                                    ++zero;
+                                    break;
+                                case 1:
+                                    ++one;
+                                    break;
+                                case 2:
+                                    ++two;
+                                    break;
+                            }
+                        }
+
+                        statusCount = zero;
+                        zero = 0;
+                        System.out.println("statusCount"+" "+statusCount);
+
+
+                    }
+                }
+
+                @Override
+                public void  onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+           /* mDatabase.child("pickupPoints").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.getValue() != null)
+                    {
+                        PickUpCount = dataSnapshot.getChildrenCount();
+                        System.out.println("PickUpCount"+PickUpCount);
+
+                    }
+                }
+
+                @Override
+                public void  onCancelled(DatabaseError databaseError) {
+
+                }
+            });*/
+            //System.out.println("aaaaa"+status0);
+            mDatabase.child("requestLimit").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue()!=null){
+                        requestLimit = dataSnapshot.getValue(Integer.class);
+                        System.out.println("requestLimit"+requestLimit);
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
         }
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -215,6 +299,8 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                     } else if (pos == 2) {
                         logoutDialog();
                     }
+
+
                 } else {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivitys.this);
                     alertDialog.setTitle("Cancel Ride");
@@ -324,7 +410,9 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                         markerOptPickup.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin));
                         if (markerPickup == null) {
                             markerPickup = mMap.addMarker(markerOptPickup);
-                        } else {
+                        }
+                        else
+                            {
                             markerPickup.remove();
                             markerPickup = mMap.addMarker(markerOptPickup);
                         }
@@ -381,6 +469,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                 }
                 break;
             case R.id.tvRequestRide:
+                System.out.println("valueeee"+statusCount);
                 rideNotes = edtDriverNote.getText().toString();
                 if (new LatLng(pickupLatitude,pickupLongitude) != null) {
                     if (dropOffPlace != null) {
@@ -389,7 +478,14 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                         if (new LatLng(pickupLatitude,pickupLongitude).equals(dropOffPlace.getLatLng())) {
                             alertDialog("", "Please choose different Pickup and DropOff location");
                         } else {
-                            requestRide();
+                            if(statusCount<requestLimit){
+                                requestRide();
+
+                            }
+                           else{
+                                showAlert(getResources().getString(R.string.request_limit_title),getResources().getString(R.string.request_limit_exceeded));
+                                System.out.println("NotAllowed"+requestLimit);
+                            }
                         }
                     } else {
                         alertDialog("", "Please choose destination");
@@ -401,7 +497,18 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                         if (dropOffPlace.getLatLng().equals(latLng)) {
                             alertDialog("", "Please choose different Pickup and DropOff location");
                         } else {
-                            requestRide();
+
+                            if(statusCount < requestLimit){
+                                requestRide();
+
+
+                            }
+                            else{
+
+                                showAlert(getResources().getString(R.string.request_limit_title),getResources().getString(R.string.request_limit_exceeded));
+                                System.out.println("NotAllowed"+requestLimit);
+                            }
+//                            requestRide();
                         }
                     } else {
                         alertDialog("", "Please choose destination");
@@ -418,14 +525,15 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    private boolean checkDay() {
+    private boolean checkDay()
+    {
         boolean validTime;
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         Log.d("LOG", String.valueOf(day));
-/**------------------------------------------------------------24 HOURS FORMAT--*/
+/**-     -----------------------------------------------------------24 HOURS FORMAT--*/
         switch (day) {
             case Calendar.SUNDAY:
                 if ((hour >= 11 && hour < 24) || hour == 0 || (hour == 1 && minute < 30)) {
@@ -497,7 +605,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
             mDatabase.child("pickupPoints")
                     .child(rideId)
                     .removeValue(new DatabaseReference.CompletionListener() {
-                        @Override
+                            @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (!driverFcmToken.equals("") && driverFcmToken != null) {
 
@@ -785,6 +893,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
             //  mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             current_LatLng=new LatLng(location.getLatitude(),location.getLongitude());
+            System.out.println("currentLATLONG"+current_LatLng);
             Log.d("SERVICE", "Lat : " + location.getLatitude() + "," + "Long : " + location.getLongitude());
             double crtLat = location.getLatitude();
             double crtLng = location.getLongitude();
@@ -933,7 +1042,8 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
+        }
+      else{
             try {
                 mMap.getUiSettings().setScrollGesturesEnabled(true);
                 addresses = geocoder.getFromLocation(crtLat, crtLng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
@@ -967,7 +1077,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
             } catch (IOException e) {
                 e.printStackTrace();
             }
-       }
+      }
     }
 
     @Override
@@ -988,16 +1098,20 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
         Log.d("dropoffLatitude", String.valueOf(dropoffLatitude));
         Log.d("dropoffLongitude", String.valueOf(dropoffLongitude));
         Log.d("dropoffLocation", String.valueOf(dropoffLocation));*/
+
+      //current_LatLng = new LatLng(30.3327, -81.4112);
+
         Log.e("locinPolygon",isPointInPolygon(current_LatLng,poly)+" "+pickupAddress+" "+pickupLatitude+" "+pickupLongitude);
         if (!isPointInPolygon(current_LatLng,poly)){
             showAlert(getResources().getString(R.string.hours_alert_title),getResources().getString(R.string.area_alert_msg));
         }else if (!isPointInPolygon(new LatLng(pickupLatitude,pickupLongitude),poly)){
             showAlert(getResources().getString(R.string.hours_alert_title),getResources().getString(R.string.pickup_alert_msg));
-        }else if (!isPointInPolygon(new LatLng(dropoffLatitude,dropoffLongitude),poly)){
+    }else if (!isPointInPolygon(new LatLng(dropoffLatitude,dropoffLongitude),poly)){
             showAlert(getResources().getString(R.string.hours_alert_title),getResources().getString(R.string.drop_alert_msg));
         }else if (!checkDay()){
             showAlert(getResources().getString(R.string.hours_alert_title),getResources().getString(R.string.hours_alert_msg));
-        }else{
+        }
+        else{
             try {
                 rideId = String.valueOf(System.currentTimeMillis());
                 Log.d("timeS", rideId);
@@ -1034,6 +1148,7 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                         riderModel.setPicture("");
                     }
                     // Log.d("RiDERMODEL", String.valueOf(riderModel));
+
                     mDatabase.child("pickupPoints").child(rideId).setValue(riderModel);
                     requestingDriver();
                     try {
@@ -1059,9 +1174,14 @@ public class MapsActivitys extends AppCompatActivity implements OnMapReadyCallba
                         try {
 
                             if (dataSnapshot.getValue() != null) {
+
+                                /*requestLimit = dataSnapshot.child("requestLimit").getValue(Integer.class);
+                                System.out.println("REQUESTTTTT"+requestLimit);*/
                                 status = dataSnapshot.child("status").getValue(Integer.class);
 
-                                //status=0 request, status=1 drive accepted, status=2 pickup drive
+                                System.out.println("statussss"+status);
+
+                                //status=0 request,  status=1 drive accepted, status=2 pickup drive
                                 if (status == 1) {
                                     String driverID = dataSnapshot.child("driverID").getValue(String.class);
                                     driverName = dataSnapshot.child("driverName").getValue(String.class);
